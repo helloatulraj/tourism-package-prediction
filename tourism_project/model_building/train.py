@@ -14,19 +14,21 @@ def train_model():
     print("--- Starting Model Training with MLflow Tracking ---")
     
     try:
-        # Load the train and test data
+        # Load train and test data
         X_train = pd.read_csv("Xtrain.csv")
         X_test = pd.read_csv("Xtest.csv")
         y_train = pd.read_csv("ytrain.csv").values.ravel()
         y_test = pd.read_csv("ytest.csv").values.ravel()
         
-        # --- THE FIX: Drop any 'Unnamed' phantom columns ---
+        # Extra safety check: Remove any 'Unnamed' columns
         X_train = X_train.loc[:, ~X_train.columns.str.contains('^Unnamed')]
         X_test = X_test.loc[:, ~X_test.columns.str.contains('^Unnamed')]
         
+        # Identify feature types
         numerical_cols = X_train.select_dtypes(include=['int64', 'float64']).columns.tolist()
         categorical_cols = X_train.select_dtypes(include=['object', 'category']).columns.tolist()
         
+        # Preprocessor
         preprocessor = make_column_transformer(
             (StandardScaler(), numerical_cols),
             (OneHotEncoder(handle_unknown='ignore', sparse_output=False), categorical_cols)
