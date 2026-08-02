@@ -8,11 +8,11 @@ def prepare_data():
     data_path = "tourism_project/data/tourism.csv"
     
     try:
-        # Load the dataset
+        # 2.1 Load the dataset
         df = pd.read_csv(data_path)
         print("Data loaded successfully.")
         
-        # Remove any extra index columns (like 'Unnamed: 0')
+        # 2.2 Remove any extra index columns (like 'Unnamed: 0')
         df = df.loc[:, ~df.columns.str.contains('^Unnamed')]
         
         # Remove CustomerID column as it is just an ID
@@ -29,12 +29,12 @@ def prepare_data():
         X = df.drop('ProdTaken', axis=1)
         y = df['ProdTaken']
         
-        # Split into training and test sets
+        # 2.3 Split into training and test sets
         X_train, X_test, y_train, y_test = train_test_split(
             X, y, test_size=0.2, random_state=42, stratify=y
         )
         
-        # Save splits WITHOUT row index numbers
+        # 2.4 Save splits WITHOUT row index numbers
         X_train.to_csv("Xtrain.csv", index=False)
         X_test.to_csv("Xtest.csv", index=False)
         y_train.to_csv("ytrain.csv", index=False)
